@@ -8,6 +8,7 @@
 # "uvicorn main:app" starts up the server, specifically looking for file named "main" and object "app"
 # in it. It can be reached under "http://127.0.0.1:8000" and its OpenAPI description under "/docs".
 
+from enum import Enum
 from fastapi import FastAPI
 
 app = FastAPI()
@@ -18,3 +19,20 @@ app = FastAPI()
 # "pydantic" makes sure programmed type hints are validated
 def read_item(number: int):
     return {"your input multiplied with itself": number * number}
+
+
+class BoardgameName (str, Enum):
+    catan = "Catan"
+    root = "Root"
+    wingspan = "wingspan"
+
+
+@app.get("/enums/{boardgame_name}")
+async def get_model(boardgame_name: BoardgameName):
+    if boardgame_name == BoardgameName.catan:
+        return {"selected game ": boardgame_name, "message": "Hey fellow Catanian!"}
+
+    if boardgame_name.value == "Root":
+        return {"selected game ": boardgame_name, "message": "Hey, a war-fox"}
+
+    return {"selected game": boardgame_name, "message": "Have some birds!"}
