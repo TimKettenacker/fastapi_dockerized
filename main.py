@@ -10,6 +10,8 @@
 
 from enum import Enum
 from fastapi import FastAPI
+from pydantic import BaseModel
+from typing import Optional
 
 app = FastAPI()
 
@@ -21,6 +23,7 @@ def read_item(number: int):
     return {"your input multiplied with itself": number * number}
 
 
+# multiple ways are possible to access and compare enum values
 class BoardgameName (str, Enum):
     catan = "Catan"
     root = "Root"
@@ -36,3 +39,18 @@ async def get_model(boardgame_name: BoardgameName):
         return {"selected game ": boardgame_name, "message": "Hey, a war-fox"}
 
     return {"selected game": boardgame_name, "message": "Have some birds!"}
+
+
+# the client may send data to the API. To support this a request body is declared
+# it can be tried out using "http://127.0.0.1:8000/docs#/default/create_item_items__post"
+# FastAPI will automatically read in the request body in json and validate it against the model
+class Item(BaseModel):
+    name: str
+    description: Optional[str] = None
+    price: float
+    tax: float = None
+
+@app.post("/items/")
+async def create_item(item: Item):
+    return item
+
