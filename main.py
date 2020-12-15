@@ -13,7 +13,8 @@ from fastapi import FastAPI
 app = FastAPI()
 
 
-@app.get("/")
+@app.get("/multiply_by_itself/{number}")
 # the function right below is in charge of of handling requests that go to path "/" using a GET
-def root():
-    return {"message": "Hello World"}
+# "pydantic" makes sure programmed type hints are validated
+def read_item(number: int):
+    return {"your input multiplied with itself": number * number}
